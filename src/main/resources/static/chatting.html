@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .container{
+            width: 500px;
+            margin: 0 auto;
+            padding: 25px
+        }
+        .container h1{
+            text-align: left;
+            padding: 5px 5px 5px 5px;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .chatting{
+            border : 1px solid gray;
+            width: 700px;
+            height: 700px;
+            overflow: auto;
+        }
+        .chatting p{
+            color: black;
+            text-align: left;
+        }
+        input{
+            width: 450px;
+            height: 50px;
+        }
+
+        th{
+            width : 100px;
+        }
+        #yourMsg{
+            width: 700px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <h1 id="title_room">채팅방제목</h1>
+            <span id="currentCount">1</span> /
+            <span id="maxCount">2</span>
+        <p></p>
+        <div id="chatting" class="chatting">
+        </div>
+        <div id="yourMsg">
+            <table class="inputTable">
+                <tr>
+                    <th>메시지</th>
+                    <th><input id="msg" placeholder="보내실 메시지를 입력하세요."></th>
+                    <th><button onclick="send()" id="sendBtn">보내기</button></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script>
+
+    var userId = window.prompt("사용자 닉네임");
+
+
+    $('#msg').keypress(function(e){
+        if(e.keyCode===13) send();
+    });
+
+    function send(){
+        console.log('send()');
+        var message = $('#msg').val();
+        $('#chatting').append("<p>"+userId+" : "+message+"</p>");
+        $("#msg").val('');
+    }
+
+    function connect(){
+        var socket = new SockJS("/chat");
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({},function(){},function(){});
+    }
+
+    connect();
+</script>
+</body>
+</html>
